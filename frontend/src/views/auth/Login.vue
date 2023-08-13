@@ -6,13 +6,13 @@
                     <h2 class="text-center mb-4">Login</h2>
                     <form @submit.prevent="login">
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email" v-model="email" placeholder="Enter your email">
+                            <label class="required-label" for="email">Email</label>
+                            <input type="text" class="form-control" id="email" v-model="email" placeholder="Enter your email" required>
                             <small v-if="errors.email" class="text-danger">{{ errors.email[0]}}</small>
                         </div>
                         <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter your password">
+                            <label class="required-label" for="password">Password</label>
+                            <input type="password" class="form-control" id="password" v-model="password" placeholder="Enter your password" required>
                             <small v-if="errors.password" class="text-danger">{{ errors.password[0]}}</small>
                         </div>
                         <button type="submit" class="btn btn-primary btn-block">Login</button>

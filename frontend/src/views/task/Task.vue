@@ -6,7 +6,7 @@
             <div class="task-column open-column">
                 <h3 class="column-heading">Open</h3>
                 <ul class="list-group">
-                    <button type="button" class="btn btn-primary btn btn-primary mb-2" data-toggle="modal" data-target="#createFormModal">
+                    <button type="button" class="btn btn-primary btn btn-primary mb-2" data-toggle="modal" data-target="#createFormModal" >
                         Create Task
                     </button>
                     <li class="list-group-item" v-for="task in filteredTasks('open')" :key="task.id">{{ task.title }}
@@ -57,17 +57,23 @@
     </div>
 </div>
 
+<TaskCreateModal :modal-id="createFormModal" @fetchTasks="fetchTasks">
+
+</TaskCreateModal>
 </template>
 <script>
 import NavBar from '../../components/NavBar.vue'
-import { useTaskStore } from '../../stores/taskStore';
+import TaskCreateModal from '../../components/task/TaskCreateModal.vue'
+import { useTaskStore } from '../../stores/taskStore.js';
 export default {
     components: {
-        NavBar
+        NavBar, TaskCreateModal
     },
     data() {
         return {
-            tasks: []
+            createFormModal: false,
+            tasks: [],
+            ModalId:''
         }
     },
 
@@ -76,7 +82,6 @@ export default {
     },
 
     computed: {
-
         filteredTasks() {
             return status => this.tasks.filter(task => task.status === status)
         },

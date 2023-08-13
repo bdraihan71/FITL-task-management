@@ -3,6 +3,9 @@ import { fetchTasks, deleteTask } from '../apis/taskApi.js'
 
 export const useTaskStore = defineStore('task', {
     state: () => ({
+        data: null,
+        message: null,
+        status: null,
         tasks: []
     }),
 
@@ -11,6 +14,12 @@ export const useTaskStore = defineStore('task', {
     },
 
     actions: {
+        createTask(data, message, status) {
+            this.data = data;
+            this.message = message;
+            this.status = status;
+        },
+
         async fetchTasks() {
             try {
                 const tasks = await fetchTasks();
