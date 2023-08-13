@@ -2,9 +2,13 @@
 </script>
 
 <template>
-    <div>
-        <router-view />
-    </div>
+  <div>
+    <router-view/>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+ body {
+      background-color: #f5f5f5;
+  }
+</style>
