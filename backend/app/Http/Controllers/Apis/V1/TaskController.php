@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Apis\V1;
 
 use App\Classes\MakeResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTaskRequest;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -27,9 +28,16 @@ class TaskController extends Controller
         }
     }
 
-    public function store()
+    public function store(StoreTaskRequest $request)
     {
+        try{
+            $data = $this->taskRepository->createNewTask($request);
+            return  MakeResponse::successResponse("New Task created successfully", 200, $data);
 
+        }catch(Exception $exception){
+            Log::error("create new task error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            return MakeResponse::errorResponse();
+        }
     }
 
     public function show()

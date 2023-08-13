@@ -13,7 +13,7 @@ class TaskRepository implements TaskRepositoryInterface
     {
         try{
             $authUserId = auth()->user()->id;
-            
+
             $results = Task::where(function ($query) use ($authUserId) {
                 $query->where('created_for', $authUserId);
             })->orWhere(function ($query) use ($authUserId) {
@@ -30,8 +30,22 @@ class TaskRepository implements TaskRepositoryInterface
         }
     }
 
-    public function createNewTask()
+    public function createNewTask($request)
     {
+        try{
+            $task  = Task::create([
+                'title' => $request['title'],
+                'description' => $request['description'],
+                'deadline' => $request['deadline'],
+                'created_by' => auth()->user()->id,
+                'created_for' => $request['created_for'],
+            ]);
 
+            return $task;
+
+        }catch(Exception $exception){
+            Log::error("create new task error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            throw new Exception($exception->getMessage());
+        }
     }
 }
