@@ -41,7 +41,7 @@ export default {
         async login() {
             try {
                 await login(this.email, this.password)
-                // this.$router.push('/task')
+                this.$router.push('/')
             } catch (error) {
                 this.errors = error
                 console.error('Login error:', error);
