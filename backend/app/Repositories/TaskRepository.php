@@ -49,6 +49,38 @@ class TaskRepository implements TaskRepositoryInterface
         }
     }
 
+    public function gettaskById($taskId)
+    {
+        try{
+            $task = Task::findOrFail($taskId);
+            return $task;
+
+        }catch(Exception $exception){
+            Log::error("get task by id error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            throw new Exception($exception->getMessage());
+        }
+    }
+
+    public function updateTask($taskId, $newDetails)
+    {
+        try{
+            $task = Task::findOrFail($taskId);
+
+            $task->title = $newDetails['title'];
+            $task->description = $newDetails['description'];
+            $task->deadline = $newDetails['deadline'];
+            $task->created_by = $newDetails['created_by'];
+            $task->created_for = $newDetails['created_for'];
+            $task->save();
+
+            return $task;
+
+        }catch(Exception $exception){
+            Log::error("task update error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            throw new Exception($exception->getMessage());
+        }
+    }
+
     public function deleteTask($taskId)
     {
         try{

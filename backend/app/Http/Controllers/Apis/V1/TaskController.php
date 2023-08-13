@@ -40,14 +40,28 @@ class TaskController extends Controller
         }
     }
 
-    public function show()
+    public function show($id)
     {
+        try{
+            $data = $this->taskRepository->gettaskById($id);
+            return  MakeResponse::successResponse("Task data retrieved successfully", 200, $data);
 
+        }catch(Exception $exception){
+            Log::error("get task by id error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            return MakeResponse::errorResponse();
+        }
     }
 
-    public function update()
+    public function update(StoreTaskRequest $request, $id)
     {
+        try{
+            $data = $this->taskRepository->updateTask($id, $request);
+            return  MakeResponse::successResponse("Task update successfully", 200, $data);
 
+        }catch(Exception $exception){
+            Log::error("task update error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            return MakeResponse::errorResponse();
+        }
     }
 
     public function destroy($id)
