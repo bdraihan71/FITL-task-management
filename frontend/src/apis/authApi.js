@@ -1,16 +1,12 @@
-import axios from 'axios';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../stores/authStore.js';
+import axiosInstance from './axiosInstance.js'
 
-
-
-const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api', // base backend api
-});
+const authApi = axiosInstance
 
 
 export const login = async (email, password) => {
     try {
-        const response = await api.post('/login', { email, password });
+        const response = await authApi.post('/login', { email, password });
         const { token, user } = response.data.data;
         useAuthStore().login(token, user);
         return response.data;
@@ -21,7 +17,7 @@ export const login = async (email, password) => {
 
 export const signup = async (name, email, password, password_confirmation) => {
     try {
-        const response = await api.post('/register', { name, email, password, password_confirmation });
+        const response = await authApi.post('/register', { name, email, password, password_confirmation });
         const { token, user } = response.data.data;
         useAuthStore().signup(token, user);
         return response.data;
@@ -30,4 +26,4 @@ export const signup = async (name, email, password, password_confirmation) => {
     }
 };
 
-export default api;
+export default authApi;
