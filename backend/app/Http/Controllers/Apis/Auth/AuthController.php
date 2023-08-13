@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Apis\Auth;
 
+use App\Classes\MakeResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
@@ -20,11 +21,11 @@ class AuthController extends Controller
                         'user' => $user,
                         'token' => $token
                     ];
-            return $data;
+                return MakeResponse::successResponse("user created successfully", 200, $data);
         
         }catch(\Exception $exception){
             Log::error("registration error : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
-            return $exception;
+            return MakeResponse::errorResponse();
         }
     }
 
