@@ -70,13 +70,18 @@ class TaskRepository implements TaskRepositoryInterface
     {
         try{
             $task = Task::findOrFail($taskId);
+            $oldTask = $task->toArray();
 
             $task->title = $newDetails['title'];
             $task->description = $newDetails['description'];
             $task->deadline = $newDetails['deadline'];
-            $task->created_by = $newDetails['created_by'];
             $task->created_for = $newDetails['created_for'];
             $task->save();
+
+            if($task->created_for && $task->created_for != $oldTask['created_for']) //only mail natification for new assign user
+            {
+                $this->callTaskEvent($task);
+            }
 
             return $task;
 
@@ -105,6 +110,8 @@ class TaskRepository implements TaskRepositoryInterface
         $data['created_for_email'] = $user->email;
         $data['created_for_name'] = $user->name;
         $data['title'] = $task->title;
+        $data['description'] = $task->description;
+        $data['deadline'] = $task->deadline;
         event(new TaskEvent($data));
     }
 }
