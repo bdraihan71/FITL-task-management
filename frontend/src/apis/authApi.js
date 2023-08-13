@@ -26,4 +26,13 @@ export const signup = async (name, email, password, password_confirmation) => {
     }
 };
 
+export const logout = async () => {
+    try {
+        await authApi.post('/logout');
+        useAuthStore().logout();
+    } catch (error) {
+        throw error;
+    }
+};
+
 export default authApi;

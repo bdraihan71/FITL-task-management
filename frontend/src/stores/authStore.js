@@ -24,5 +24,11 @@ export const useAuthStore = defineStore('auth', {
             Cookies.set('auth_token', token); // set token after signup
             this.user = user;
         },
+
+        logout() {
+            this.token = null;
+            this.user = null;
+            Cookies.remove('auth_token'); // remove token after logout
+        },
     },
 });
