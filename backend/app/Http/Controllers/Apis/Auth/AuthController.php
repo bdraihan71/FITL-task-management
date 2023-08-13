@@ -68,4 +68,22 @@ class AuthController extends Controller
             return MakeResponse::errorResponse();
         }
     }
+
+    public function searchByEmail(Request $request)
+    {
+        try{
+            $searchEmail = $request->input('email');
+            $users = User::where('email', 'LIKE', '%' . $searchEmail . '%')->get();
+
+            if ($users->isEmpty()) {
+                MakeResponse::errorResponse('No users found for the provided email', 404);
+            }
+
+            return MakeResponse::successResponse("Users matching the email were found", 200, $users);
+
+        }catch(\Exception $exception){
+            Log::error("user search by email : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
+            return MakeResponse::errorResponse();
+        }
+    }
 }
