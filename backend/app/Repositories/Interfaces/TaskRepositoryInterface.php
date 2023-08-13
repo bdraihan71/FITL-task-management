@@ -9,4 +9,5 @@ interface TaskRepositoryInterface
     public function gettaskById($taskId);
     public function updateTask($taskId, $newDetails);
     public function deleteTask($taskId);
+    public function callTaskEvent($task);
 }

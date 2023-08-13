@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Events\TaskEvent;
 use App\Models\Task;
+use App\Models\User;
 use App\Repositories\Interfaces\TaskRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -41,6 +43,9 @@ class TaskRepository implements TaskRepositoryInterface
                 'created_for' => $request['created_for'],
             ]);
 
+            if($task->created_for){
+                $this->callTaskEvent($task);
+            }
             return $task;
 
         }catch(Exception $exception){
@@ -92,5 +97,14 @@ class TaskRepository implements TaskRepositoryInterface
             Log::error("task delete error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
             throw new Exception($exception->getMessage());
         }
+    }
+
+    public function callTaskEvent($task)
+    {
+        $user = User::findOrFail($task->created_for);
+        $data['created_for_email'] = $user->email;
+        $data['created_for_name'] = $user->name;
+        $data['title'] = $task->title;
+        event(new TaskEvent($data));
     }
 }
