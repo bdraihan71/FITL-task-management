@@ -13,4 +13,13 @@ export const fetchTasks = async () => {
     }
 };
 
+export const deleteTask = async (taskId) => {
+    try {
+        const response = await taskApi.delete('/v1/task/' + taskId)
+        return response.data
+    } catch (error) {
+        throw error;
+    }
+};
+
 export default taskApi;

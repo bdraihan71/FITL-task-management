@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { fetchTasks } from '../apis/taskApi.js'
+import { fetchTasks, deleteTask } from '../apis/taskApi.js'
 
 export const useTaskStore = defineStore('task', {
     state: () => ({
@@ -7,7 +7,7 @@ export const useTaskStore = defineStore('task', {
     }),
 
     getters: {
-      
+
     },
 
     actions: {
@@ -18,6 +18,16 @@ export const useTaskStore = defineStore('task', {
             } catch (error) {
                 throw error;
             }
-        }
+        },
+
+        async deleteTask(taskId) {
+            try {
+                await deleteTask(taskId);
+                const updatedTasks = this.tasks.filter(task => task.id !== taskId)
+                this.tasks = updatedTasks
+            } catch (error) {
+                throw error;
+            }
+        },
     },
 });
