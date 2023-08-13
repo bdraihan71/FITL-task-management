@@ -18,7 +18,8 @@ class TaskAssignMail extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public $data
+        public $data,
+        public $user
     )
     {
         //
@@ -30,10 +31,11 @@ class TaskAssignMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address($this->data['created_for_email'], $this->data['created_for_name']),
+            from: new Address($this->data['created_by_email'], $this->user['created_by_name']),
+            
 
             replyTo: [
-                new Address($this->data['created_for_email'], $this->data['created_for_name']),
+                new Address($this->user['email'], $this->user['name']),
             ],
             subject: 'Task: ' . $this->data['title'],
         );

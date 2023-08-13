@@ -107,11 +107,11 @@ class TaskRepository implements TaskRepositoryInterface
     public function callTaskEvent($task)
     {
         $user = User::findOrFail($task->created_for);
-        $data['created_for_email'] = $user->email;
-        $data['created_for_name'] = $user->name;
+        $data['created_by_email'] = auth()->user()->email;
+        $data['created_by_name'] = auth()->user()->name;
         $data['title'] = $task->title;
         $data['description'] = $task->description;
         $data['deadline'] = $task->deadline;
-        event(new TaskEvent($data));
+        event(new TaskEvent($data, $user));
     }
 }

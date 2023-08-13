@@ -8,7 +8,7 @@
     <div class="container">
         <div class="jumbotron">
             <h1 class="display-4">Task Assigned</h1>
-            <p class="lead">Hello {{ $data['created_for_name'] }},</p>
+            <p class="lead">Hello {{ $user->name }},</p>
             
             <p>A new task has been assigned to you:</p>
             

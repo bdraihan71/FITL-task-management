@@ -18,7 +18,8 @@ class TaskEvent
      * Create a new event instance.
      */
     public function __construct(
-        public $data
+        public $data,
+        public $user,
     )
     {
         //

@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class TaskAssignNotification extends Notification implements ShouldQueue
 {
@@ -16,7 +17,8 @@ class TaskAssignNotification extends Notification implements ShouldQueue
      * Create a new notification instance.
      */
     public function __construct(
-        public $data
+        public $data,
+        public $user,
     )
     {
         //
@@ -37,7 +39,7 @@ class TaskAssignNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable)
     {
-        return (new TaskAssignMail($this->data))->to($notifiable->email);
+        return (new TaskAssignMail($this->data, $this->user))->to($notifiable->email);
     }
 
     /**
