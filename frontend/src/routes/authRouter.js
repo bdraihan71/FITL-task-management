@@ -1,5 +1,5 @@
 import Login from '../views/auth/Login.vue'
-// import Registration from '../views/auth/Registration.vue'
+import Registration from '../views/auth/Registration.vue'
 
 
 
@@ -10,11 +10,11 @@ const authRoute = [
         component: Login
     },
 
-    // {
-    //     path: '/registration',
-    //     name: 'Registration',
-    //     component: Registration
-    // },
+    {
+        path: '/registration',
+        name: 'Registration',
+        component: Registration
+    },
 
 ]
 
