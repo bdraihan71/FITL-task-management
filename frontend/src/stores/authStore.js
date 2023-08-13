@@ -11,12 +11,18 @@ export const useAuthStore = defineStore('auth', {
         isAuthenticated: (state) => !!state.token,
         currentUser: (state) => state.user,
     },
-    
+
     actions: {
         login(token, user) {
             this.token = token;
             Cookies.set('auth_token', token); // set token after login
             this.user = user;
-        }
+        },
+
+        signup(token, user) {
+            this.token = token;
+            Cookies.set('auth_token', token); // set token after signup
+            this.user = user;
+        },
     },
 });
