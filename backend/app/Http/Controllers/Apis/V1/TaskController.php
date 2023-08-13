@@ -50,8 +50,15 @@ class TaskController extends Controller
 
     }
 
-    public function destroy()
+    public function destroy($id)
     {
+        try{
+            $data = $this->taskRepository->deleteTask($id);
+            return  MakeResponse::successResponse("Item deleted successfully", 200, $data);
 
+        }catch(Exception $exception){
+            Log::error("task delete error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            return MakeResponse::errorResponse();
+        }
     }
 }

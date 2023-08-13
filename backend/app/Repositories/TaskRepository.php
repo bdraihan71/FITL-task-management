@@ -48,4 +48,17 @@ class TaskRepository implements TaskRepositoryInterface
             throw new Exception($exception->getMessage());
         }
     }
+
+    public function deleteTask($taskId)
+    {
+        try{
+            $task = Task::findOrFail($taskId);
+            $task->delete();
+            return $task;
+
+        }catch(Exception $exception){
+            Log::error("task delete error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
+            throw new Exception($exception->getMessage());
+        }
+    }
 }
