@@ -47,6 +47,18 @@ export const fetchTasks = async () => {
     }
 };
 
+export const userSearchByEmail = async (userEmail) => {
+    try {
+        const response = await taskApi.get('/users/search/' + '?email=' + userEmail);
+        console.log(response.data)
+        const { data } = response.data
+        useTaskStore().userSearchByEmail(data)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+};
+
 export const deleteTask = async (taskId) => {
     try {
         const response = await taskApi.delete('/v1/task/' + taskId)

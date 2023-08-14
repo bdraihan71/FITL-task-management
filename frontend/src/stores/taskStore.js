@@ -40,6 +40,11 @@ export const useTaskStore = defineStore('task', {
             }
         },
 
+        userSearchByEmail(data){
+            console.log("store: " + data)
+        },
+
+
         passingTaskValue(task) {
             this.myData.id = task.id
             this.myData.title = task.title

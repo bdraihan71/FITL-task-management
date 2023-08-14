@@ -28,7 +28,6 @@
                         <div class="form-group" v-if="!isEditMode || isEditing">
                             <label for="status">Status:</label>
                             <select class="form-control" id="status" v-model="form.status" :readonly="!isEditMode">
-                                <option value="">Choose an option</option>
                                 <option v-for="option in dropdownOptions" :value="option.value" :key="option.value">{{ option.label }}</option>
                             </select>
                         </div>
@@ -40,7 +39,7 @@
     
                         <div class="form-group">
                             <label for="created_for">Assign To</label>
-                            <input type="text" class="form-control" id="created_for" v-model="form.created_for" placeholder="Enter searchable value" :readonly="!isEditMode">
+                            <input type="text" class="form-control" id="created_for" v-model="form.created_for" placeholder="Enter email" :readonly="!isEditMode" @keyup="searchUser">
                             <div id="suggestionList" class="suggestion-list"></div>
                         </div>
     
@@ -53,7 +52,7 @@
     </div>
     </template>
 <script>
-import { createTask, updateTask } from '../../apis/taskApi.js'
+import { createTask, updateTask, userSearchByEmail } from '../../apis/taskApi.js'
 import { useTaskStore } from '../../stores/taskStore.js';
 export default {
     data() {
@@ -73,7 +72,7 @@ export default {
                 { label: "open", value: "open" },
                 { label: "in-progress", value: "in-progress" },
                 { label: "done", value: "done" }
-            ]
+            ],
         }
     },
 
@@ -142,7 +141,12 @@ export default {
 
         editMode() {
             this.isEditMode = !this.isEditMode
+        },
+
+        async searchUser(){
+            await userSearchByEmail(this.form.created_for)
         }
+
     },
 }
 </script>
