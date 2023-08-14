@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { fetchTasks, deleteTask } from '../apis/taskApi.js'
+import { fetchTasks, deleteTask, userSearchByEmail } from '../apis/taskApi.js'
 
 export const useTaskStore = defineStore('task', {
     state: () => ({
@@ -7,11 +7,12 @@ export const useTaskStore = defineStore('task', {
         message: null,
         status: null,
         tasks: [],
-        myData: {}
+        myData: {},
+        users: []
     }),
 
     getters: {
-
+        usersEmail: (state) => state.users.map(user => user.email )
     },
 
     actions: {
@@ -40,10 +41,15 @@ export const useTaskStore = defineStore('task', {
             }
         },
 
-        userSearchByEmail(data){
-            console.log("store: " + data)
+        async userSearchByEmail(searchData) {
+            try {
+                const users = await userSearchByEmail(searchData)
+                this.users = users.data
+            } catch (error) {
+                this.users = []
+                throw error;
+            }
         },
-
 
         passingTaskValue(task) {
             this.myData.id = task.id

@@ -37,10 +37,16 @@
                             <input type="datetime-local" class="form-control" v-model="form.deadline" id="deadline"  :readonly="!isEditMode">
                         </div>
     
-                        <div class="form-group">
+                        <div class="form-group search-container position-relative">
                             <label for="created_for">Assign To</label>
                             <input type="text" class="form-control" id="created_for" v-model="form.created_for" placeholder="Enter email" :readonly="!isEditMode" @keyup="searchUser">
-                            <div id="suggestionList" class="suggestion-list"></div>
+                            <!-- <div id="suggestionList" class="suggestion-list">{{usersEmail}}</div> -->
+                            <!-- <div v-if="showSuggestions" class="search-suggestions"> -->
+                            <div v-if="showSuggestions" class="search-suggestions">
+                                <div v-for="(suggestion, index) in usersEmail" :key="index" class="search-suggestion" @click="selectSuggestion(suggestion)">
+                                {{ suggestion }}
+                                </div>
+                            </div>
                         </div>
     
                         <button v-if="isEditMode && !onlyView" type="submit" class="btn btn-primary">{{ isEditing ? 'Update' : 'Create' }}</button>
@@ -52,7 +58,7 @@
     </div>
     </template>
 <script>
-import { createTask, updateTask, userSearchByEmail } from '../../apis/taskApi.js'
+import { createTask, updateTask } from '../../apis/taskApi.js'
 import { useTaskStore } from '../../stores/taskStore.js';
 export default {
     data() {
@@ -73,12 +79,16 @@ export default {
                 { label: "in-progress", value: "in-progress" },
                 { label: "done", value: "done" }
             ],
+            showSuggestions: false
         }
     },
 
     computed: {
         status() {
             return useTaskStore().status
+        },
+        usersEmail() {
+            return useTaskStore().usersEmail
         }
     },
 
@@ -143,8 +153,20 @@ export default {
             this.isEditMode = !this.isEditMode
         },
 
-        async searchUser(){
-            await userSearchByEmail(this.form.created_for)
+        selectSuggestion(suggestion) {
+            this.form.created_for = suggestion;
+            this.showSuggestions = false;
+        },
+
+        async searchUser() {
+            const taskStore = useTaskStore()
+            const searchData = this.form.created_for
+            try {
+                await taskStore.userSearchByEmail(searchData)
+                this.showSuggestions = true
+            } catch (error) {
+                console.log(this.error)
+            }
         }
 
     },
@@ -153,6 +175,56 @@ export default {
 <style scoped>
 select[readonly] {
     pointer-events: none;
+}
+
+.search-container {
+  position: relative;
+}
+
+.search-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 1000;
+  border-radius: 4px;
+}
+
+.search-suggestion {
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-suggestion:hover {
+  background-color: #f4f4f4;
+}
+
+.form-control:focus + .search-suggestions {
+  display: block;
+}
+
+/* Styling enhancements */
+.search-suggestion {
+  display: flex;
+  align-items: center;
+}
+
+.search-suggestion::before {
+  content: "\f007";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  margin-right: 10px;
+}
+
+.search-suggestion span {
+  flex: 1;
 }
 </style>
     

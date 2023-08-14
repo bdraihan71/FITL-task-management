@@ -49,11 +49,11 @@ export const fetchTasks = async () => {
 
 export const userSearchByEmail = async (userEmail) => {
     try {
-        const response = await taskApi.get('/users/search/' + '?email=' + userEmail);
-        console.log(response.data)
-        const { data } = response.data
-        useTaskStore().userSearchByEmail(data)
-        return response.data
+        if (userEmail.length > 0) {
+            const response = await taskApi.get('/users/search/' + '?email=' + userEmail);
+            return response.data
+        }
+
     } catch (error) {
         throw error
     }
