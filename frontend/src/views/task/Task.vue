@@ -6,14 +6,14 @@
             <div class="task-column open-column">
                 <h3 class="column-heading">Open</h3>
                 <ul class="list-group">
-                    <button type="button" class="btn btn-primary btn btn-primary mb-2" data-toggle="modal" data-target="#createFormModal" >
+                    <button type="button" class="btn btn-primary btn btn-primary mb-2" data-toggle="modal" data-target="#createFormModal" @click="initCreateTask">
                         Create Task
                     </button>
                     <li class="list-group-item" v-for="task in filteredTasks('open')" :key="task.id">{{ task.title }}
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <span class="mr-3">Deadline: {{ task.deadline }}</span>
                             <span>
-                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)"></a>
+                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
                                 <a href="#" class="fas fa-trash-alt text-danger fa-lg" @click="deleteTask(task)"></a>
                             </span>
                         </div>
@@ -30,7 +30,7 @@
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <span class="mr-3">Deadline: {{ task.deadline }}</span>
                             <span>
-                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)"></a>
+                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
                             </span>
                         </div>
                     </li>
@@ -46,7 +46,7 @@
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <span class="mr-3">Deadline: {{ task.deadline }}</span>
                             <span>
-                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)"></a>
+                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
                                 <a href="#" class="fas fa-trash-alt text-danger fa-lg" @click="deleteTask(task)"></a>
                             </span>
                         </div>
@@ -57,7 +57,7 @@
     </div>
 </div>
 
-<TaskCreateModal :modal-id="createFormModal" @fetchTasks="fetchTasks">
+<TaskCreateModal id="createFormModal" @fetchTasks="fetchTasks" ref="childRef">
 
 </TaskCreateModal>
 </template>
@@ -71,9 +71,7 @@ export default {
     },
     data() {
         return {
-            createFormModal: false,
             tasks: [],
-            ModalId:''
         }
     },
 
@@ -107,6 +105,23 @@ export default {
                 console.log(this.error)
             }
         },
+
+        initCreateTask() {
+            if (this.$refs.childRef) {
+                    this.$refs.childRef.initCreate(); // Calling the child function
+                }
+        },
+        editTask(task) {
+            const taskStore = useTaskStore();
+            try {
+                taskStore.passingTaskValue(task);
+                if (this.$refs.childRef) {
+                    this.$refs.childRef.editData(); // Calling the child function
+                }
+            } catch (error) {
+                console.log(this.error)
+            }
+        }
 
     },
 }
@@ -145,4 +160,5 @@ export default {
 .list-group-item:hover {
     transform: translateY(-5px);
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
-}</style>
+}
+</style>

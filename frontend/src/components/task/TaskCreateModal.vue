@@ -3,7 +3,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createFormModalLabel">Create Task</h5>
+                <h5 class="modal-title" id="createFormModalLabel">{{ isEditing ? 'Update' : 'Create' }} Task</h5>
                 <button type="button" ref="closeButton" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -31,7 +31,7 @@
                         <div id="suggestionList" class="suggestion-list"></div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">{{ isEditing ? 'Update' : 'Create' }}</button>
 
                 </form>
             </div>
@@ -40,7 +40,7 @@
 </div>
 </template>
 <script>
-import { createTask } from '../../apis/taskApi.js'
+import { createTask, updateTask } from '../../apis/taskApi.js'
 import { useTaskStore } from '../../stores/taskStore.js';
 export default {
     data() {
@@ -51,6 +51,8 @@ export default {
                 deadline: null,
                 created_for: null
             },
+            isEditing: false,
+            taskId:null
         }
     },
 
@@ -61,7 +63,15 @@ export default {
     },
 
     methods: {
-        async submitTaskForm() {
+        submitTaskForm() {
+            if (this.isEditing) {
+                this.updateTask()
+            } else {
+                this.createNewTask()
+            }
+        },
+
+        async createNewTask() {
             try {
                 await createTask(this.form)
                 if (this.status == 'success') {
@@ -78,6 +88,31 @@ export default {
                 console.error('Task creating error:', error);
             }
         },
+
+        async updateTask() {
+            await updateTask(this.form, this.taskId)
+            console.log("hello Raihan");
+            this.$refs.closeButton.click()
+            this.$emit('fetchTasks')
+            this.$router.push('/')
+        },
+
+        initCreate() {
+            this.isEditing = false
+            this.form.title = ''
+            this.form.description = null
+            // this.form.deadline = useTaskStore().myData.deadline
+            this.form.created_for = null
+        },
+
+        editData() {
+            this.isEditing = true
+            this.taskId = useTaskStore().myData.id
+            this.form.title = useTaskStore().myData.title
+            this.form.description = useTaskStore().myData.description
+            // this.form.deadline = useTaskStore().myData.deadline
+            this.form.created_for = useTaskStore().myData.created_for
+        }
     },
 }
 </script>

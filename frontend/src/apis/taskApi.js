@@ -13,7 +13,24 @@ export const createTask = async (task) => {
         });
         console.log(response.data)
         const { data, message, status } = response.data
-        useTaskStore().createTask(data, message, status)
+        useTaskStore().createOrUpdateTask(data, message, status)
+        return response.data
+    } catch (error) {
+        throw error
+    }
+};
+
+export const updateTask = async (task, taskId) => {
+    try {
+        const response = await taskApi.put('/v1/task/' + taskId, {
+            title: task.title,
+            description: task.description,
+            deadline: task.deadline,
+            created_for: task.created_for
+        });
+        console.log(response.data)
+        const { data, message, status } = response.data
+        useTaskStore().createOrUpdateTask(data, message, status)
         return response.data
     } catch (error) {
         throw error

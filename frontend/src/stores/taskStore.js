@@ -6,7 +6,8 @@ export const useTaskStore = defineStore('task', {
         data: null,
         message: null,
         status: null,
-        tasks: []
+        tasks: [],
+        myData: {}
     }),
 
     getters: {
@@ -14,7 +15,7 @@ export const useTaskStore = defineStore('task', {
     },
 
     actions: {
-        createTask(data, message, status) {
+        createOrUpdateTask(data, message, status) {
             this.data = data;
             this.message = message;
             this.status = status;
@@ -38,5 +39,13 @@ export const useTaskStore = defineStore('task', {
                 throw error;
             }
         },
+
+        passingTaskValue(task) {
+            this.myData.id = task.id
+            this.myData.title = task.title
+            this.myData.description = task.description
+            this.myData.deadline = task.deadline
+            this.myData.created_for = task.created_for
+        }
     },
 });
