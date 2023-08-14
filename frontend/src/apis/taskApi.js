@@ -25,6 +25,7 @@ export const updateTask = async (task, taskId) => {
         const response = await taskApi.put('/v1/task/' + taskId, {
             title: task.title,
             description: task.description,
+            status: task.status,
             deadline: task.deadline,
             created_for: task.created_for
         });

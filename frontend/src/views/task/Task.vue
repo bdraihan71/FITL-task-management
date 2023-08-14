@@ -11,10 +11,10 @@
                     </button>
                     <li class="list-group-item" v-for="task in filteredTasks('open')" :key="task.id">{{ task.title }}
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <span class="mr-3">Deadline: {{ task.deadline }}</span>
+                            <span class="mr-3">Deadline: {{ task.deadline_date_time }}</span>
                             <span>
-                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
-                                <a href="#" class="fas fa-trash-alt text-danger fa-lg" @click="deleteTask(task)"></a>
+                                <a href="#" class="fas fa-edit mr-2 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
+                                <a href="#" class="fas fa-trash-alt text-danger fa-lg" @click="deleteTask(task)" data-toggle="modal" data-target="#deleteTaskModal"></a>
                             </span>
                         </div>
                     </li>
@@ -28,9 +28,9 @@
                 <ul class="list-group">
                     <li class="list-group-item" v-for="task in filteredTasks('in-progress')" :key="task.id">{{ task.title }}
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <span class="mr-3">Deadline: {{ task.deadline }}</span>
+                            <span class="mr-3">Deadline: {{ task.deadline_date_time }}</span>
                             <span>
-                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
+                                <a href="#" class="fas fa-edit text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
                             </span>
                         </div>
                     </li>
@@ -44,10 +44,10 @@
                 <ul class="list-group">
                     <li class="list-group-item" v-for="task in filteredTasks('done')" :key="task.id">{{ task.title }}
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <span class="mr-3">Deadline: {{ task.deadline }}</span>
+                            <span class="mr-3">Deadline: {{ task.deadline_date_time }}</span>
                             <span>
-                                <a href="#" class="fas fa-edit mr-3 text-info fa-lg" @click="editTask(task)" data-toggle="modal" data-target="#createFormModal"></a>
-                                <a href="#" class="fas fa-trash-alt text-danger fa-lg" @click="deleteTask(task)"></a>
+                                <a href="#" class="fas fa-eye mr-2 text-info fa-lg" @click="editTask(task, 'onlyView')" data-toggle="modal" data-target="#createFormModal"></a>
+                                <a href="#" class="fas fa-trash-alt text-danger fa-lg" @click="deleteTask(task)" data-toggle="modal" data-target="#deleteTaskModal"></a>
                             </span>
                         </div>
                     </li>
@@ -57,21 +57,25 @@
     </div>
 </div>
 
-<TaskCreateModal id="createFormModal" @fetchTasks="fetchTasks" ref="childRef">
-
+<TaskCreateModal id="createFormModal" @fetchTasks="fetchTasks" ref="createModalRef">
 </TaskCreateModal>
+
+<TaskDeleteModal id ="deleteTaskModal" :task ="task" @fetchTasks="fetchTasks"></TaskDeleteModal>
+
 </template>
 <script>
 import NavBar from '../../components/NavBar.vue'
 import TaskCreateModal from '../../components/task/TaskCreateModal.vue'
+import TaskDeleteModal from '../../components/task/TaskDeleteModal.vue'
 import { useTaskStore } from '../../stores/taskStore.js';
 export default {
     components: {
-        NavBar, TaskCreateModal
+        NavBar, TaskCreateModal, TaskDeleteModal
     },
     data() {
         return {
             tasks: [],
+            task: null
         }
     },
 
@@ -96,27 +100,21 @@ export default {
             }
         },
 
-        async deleteTask(task) {
-            const taskStore = useTaskStore();
-            try {
-                await taskStore.deleteTask(task.id);
-                this.tasks = taskStore.tasks
-            } catch (error) {
-                console.log(this.error)
-            }
+        deleteTask(task){
+            this.task =  task
         },
 
         initCreateTask() {
-            if (this.$refs.childRef) {
-                    this.$refs.childRef.initCreate(); // Calling the child function
-                }
+            if (this.$refs.createModalRef) {
+                this.$refs.createModalRef.initCreate(); // Calling the child function
+            }
         },
-        editTask(task) {
+        editTask(task, onlyView) {
             const taskStore = useTaskStore();
             try {
                 taskStore.passingTaskValue(task);
-                if (this.$refs.childRef) {
-                    this.$refs.childRef.editData(); // Calling the child function
+                if (this.$refs.createModalRef) {
+                    this.$refs.createModalRef.editData(onlyView); // Calling the child function
                 }
             } catch (error) {
                 console.log(this.error)

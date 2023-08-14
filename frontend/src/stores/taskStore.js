@@ -44,6 +44,7 @@ export const useTaskStore = defineStore('task', {
             this.myData.id = task.id
             this.myData.title = task.title
             this.myData.description = task.description
+            this.myData.status = task.status
             this.myData.deadline = task.deadline
             this.myData.created_for = task.created_for
         }
