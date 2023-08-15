@@ -35,10 +35,12 @@ class Task extends Model
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'created_by' => $this->createdBy->name,
-            'created_for' => $this->created_for ? $this->createdFor->name : 'not assigned',
+            'created_by_name' => $this->createdBy->name,
+            'created_for' => $this->created_for ? $this->createdFor->email : '',
+            'created_for_name' => $this->created_for ? $this->createdFor->name : 'not assigned',
             'status' => $this->status,
-            'deadline' => $this->deadline ? Carbon::createFromFormat('Y-m-d H:i:s', $this->deadline)->format('Y-m-d g:i a') : 'not assigned',
+            'deadline_date_time' => $this->deadline ? Carbon::createFromFormat('Y-m-d H:i:s', $this->deadline)->format('Y-m-d g:i a') : 'not assigned',
+            'deadline' => $this->deadline,
             'updated_at' => $this->updated_at->diffForHumans(),
         ];
     }

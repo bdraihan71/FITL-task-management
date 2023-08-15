@@ -35,12 +35,13 @@ class TaskRepository implements TaskRepositoryInterface
     public function createNewTask($request)
     {
         try{
+            $user = $this->findUserByEmail($request['created_for']);
             $task  = Task::create([
                 'title' => $request['title'],
                 'description' => $request['description'],
                 'deadline' => $request['deadline'],
                 'created_by' => auth()->user()->id,
-                'created_for' => $request['created_for'],
+                'created_for' => $user->id
             ]);
 
             if($task->created_for){
@@ -69,13 +70,15 @@ class TaskRepository implements TaskRepositoryInterface
     public function updateTask($taskId, $newDetails)
     {
         try{
+            $user = $this->findUserByEmail($newDetails['created_for']);
             $task = Task::findOrFail($taskId);
             $oldTask = $task->toArray();
 
             $task->title = $newDetails['title'];
             $task->description = $newDetails['description'];
+            $task->status = $newDetails['status'];
             $task->deadline = $newDetails['deadline'];
-            $task->created_for = $newDetails['created_for'];
+            $task->created_for = $user->id;
             $task->save();
 
             if($task->created_for && $task->created_for != $oldTask['created_for']) //only mail natification for new assign user
@@ -102,6 +105,11 @@ class TaskRepository implements TaskRepositoryInterface
             Log::error("task delete error : " . json_encode($exception->getMessage()) ." User detail:" . auth()->user() . " trace : " . json_encode($exception->getTrace()));
             throw new Exception($exception->getMessage());
         }
+    }
+
+    public function findUserByEmail($email)
+    {
+        return User::where('email', $email)->first();
     }
 
     public function callTaskEvent($task)
