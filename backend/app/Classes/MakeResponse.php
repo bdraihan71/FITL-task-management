@@ -22,13 +22,13 @@ class MakeResponse
     //     ], $responseCode);
     // }
 
-    public static function errorResponse($message = "There was some internal error", $responseCode = 500, $errors = [], $status = "failure")
+    public static function errorResponse($message = "There was some internal error", $responseCode = 500, $errors = [], $status = "failure", $keyName = "internal_error")
     {
         return response()->json([
             'status' => $status,
             'message' => $message,
             'errors' => [
-                'internal_error' => [
+                $keyName => [
                     $message
                 ],
                 $errors

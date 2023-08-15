@@ -15,9 +15,14 @@
                     </div>
     
                     <form @submit.prevent="submitTaskForm">
+                        <div class="alert alert-danger" v-if="errors.internal_error">
+                            <strong>Error!</strong> {{errors.internal_error[0]}}
+                        </div>
+
                         <div class="form-group">
                             <label class="required-label" for="title">Title</label>
-                            <input type="text" class="form-control" id="title" v-model="form.title" placeholder="Enter title" required :readonly="!isEditMode">
+                            <input type="text" class="form-control" id="title" v-model="form.title" placeholder="Enter title"  :readonly="!isEditMode">
+                            <small v-if="errors.title" class="text-danger">{{ errors.title[0]}}</small>
                         </div>
     
                         <div class="form-group">
@@ -40,8 +45,7 @@
                         <div class="form-group search-container position-relative">
                             <label for="created_for">Assign To</label>
                             <input type="text" class="form-control" id="created_for" v-model="form.created_for" placeholder="Enter email" :readonly="!isEditMode" @keyup="searchUser">
-                            <!-- <div id="suggestionList" class="suggestion-list">{{usersEmail}}</div> -->
-                            <!-- <div v-if="showSuggestions" class="search-suggestions"> -->
+                            <small v-if="errors.user_email" class="text-danger">{{ errors.user_email[0]}}</small>
                             <div v-if="showSuggestions" class="search-suggestions">
                                 <div v-for="(suggestion, index) in usersEmail" :key="index" class="search-suggestion" @click="selectSuggestion(suggestion)">
                                 {{ suggestion }}
@@ -79,7 +83,8 @@ export default {
                 { label: "in-progress", value: "in-progress" },
                 { label: "done", value: "done" }
             ],
-            showSuggestions: false
+            showSuggestions: false,
+            errors: []
         }
     },
 
@@ -116,16 +121,22 @@ export default {
                 }
 
             } catch (error) {
+                this.errors = error
                 console.error('Task creating error:', error);
             }
         },
 
         async updateTask() {
-            await updateTask(this.form, this.taskId)
-            console.log("hello Raihan");
-            this.$refs.closeButton.click()
-            this.$emit('fetchTasks')
-            this.$router.push('/')
+            try {
+                await updateTask(this.form, this.taskId)
+                console.log("hello Raihan");
+                this.$refs.closeButton.click()
+                this.$emit('fetchTasks')
+                this.$router.push('/')
+            } catch (error) {
+                this.errors = error
+                console.error('Task creating error:', error);
+            }
         },
 
         initCreate() {
@@ -165,6 +176,7 @@ export default {
                 await taskStore.userSearchByEmail(searchData)
                 this.showSuggestions = true
             } catch (error) {
+                this.errors = error
                 console.log(this.error)
             }
         }
@@ -178,53 +190,53 @@ select[readonly] {
 }
 
 .search-container {
-  position: relative;
+    position: relative;
 }
 
 .search-suggestions {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border-top: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-height: 150px;
-  overflow-y: auto;
-  z-index: 1000;
-  border-radius: 4px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    border-radius: 4px;
 }
 
 .search-suggestion {
-  padding: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .search-suggestion:hover {
-  background-color: #f4f4f4;
+    background-color: #f4f4f4;
 }
 
-.form-control:focus + .search-suggestions {
-  display: block;
+.form-control:focus+.search-suggestions {
+    display: block;
 }
 
 /* Styling enhancements */
 .search-suggestion {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .search-suggestion::before {
-  content: "\f007";
-  font-family: "Font Awesome 5 Free";
-  font-weight: 900;
-  margin-right: 10px;
+    content: "\f007";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 10px;
 }
 
 .search-suggestion span {
-  flex: 1;
+    flex: 1;
 }
 </style>
     

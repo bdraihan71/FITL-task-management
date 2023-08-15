@@ -75,9 +75,8 @@ class AuthController extends Controller
         try{
             $searchEmail = $request->input('email');
             $users = User::where('email', 'LIKE', '%' . $searchEmail . '%')->get();
-
             if ($users->isEmpty()) {
-                return MakeResponse::errorResponse('No users found for the provided email', 404);
+                return MakeResponse::errorResponse( message: 'No users found for the provided email', responseCode: 404, keyName: 'user_email');
             }
             return MakeResponse::successResponse("Users matching the email were found", 200, $users);
 

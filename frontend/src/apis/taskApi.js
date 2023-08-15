@@ -11,12 +11,11 @@ export const createTask = async (task) => {
             deadline: task.deadline,
             created_for: task.created_for
         });
-        console.log(response.data)
         const { data, message, status } = response.data
         useTaskStore().createOrUpdateTask(data, message, status)
         return response.data
     } catch (error) {
-        throw error
+        throw error.response.data.errors
     }
 };
 
@@ -29,12 +28,11 @@ export const updateTask = async (task, taskId) => {
             deadline: task.deadline,
             created_for: task.created_for
         });
-        console.log(response.data)
         const { data, message, status } = response.data
         useTaskStore().createOrUpdateTask(data, message, status)
         return response.data
     } catch (error) {
-        throw error
+        throw error.response.data.errors
     }
 };
 
@@ -55,7 +53,7 @@ export const userSearchByEmail = async (userEmail) => {
         }
 
     } catch (error) {
-        throw error
+        throw error.response.data.errors
     }
 };
 
@@ -64,7 +62,7 @@ export const deleteTask = async (taskId) => {
         const response = await taskApi.delete('/v1/task/' + taskId)
         return response.data
     } catch (error) {
-        throw error;
+        throw error.response.data.errors;
     }
 };
 

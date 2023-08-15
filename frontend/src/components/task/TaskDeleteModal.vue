@@ -9,6 +9,9 @@
                 </button>
             </div>
             <div class="modal-body">
+                <div class="alert alert-danger" v-if="errors.internal_error">
+                    <strong>Error!</strong> {{errors.internal_error[0]}}
+                </div>
                 Are you sure you want to delete this task?<br> 
                 Title: <mark> {{ task ? task.title : ''}} </mark>
             </div>
@@ -26,7 +29,11 @@ export default {
     props:{
         task : Object
     },
-
+    data() {
+        return {
+            errors:[]
+        }
+    },
     methods: {
         async deleteTask() {
             const taskStore = useTaskStore();
@@ -36,6 +43,7 @@ export default {
                 this.$emit('fetchTasks')
                 this.$router.push('/')
             } catch (error) {
+                this.errors = error
                 console.log(error);
             }
         }
