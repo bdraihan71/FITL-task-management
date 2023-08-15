@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Exception;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
@@ -25,9 +26,14 @@ class AuthController extends Controller
                     ];
                 return MakeResponse::successResponse("user created successfully", 200, $data);
         
-        }catch(\Exception $exception){
+        }catch(Exception $exception){
             Log::error("registration error : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
-            return MakeResponse::errorResponse();
+            $errors = [
+                'internal_error' => [
+                    'There was some internal error'
+                ]
+            ];
+            return MakeResponse::errorResponse(errors : $errors);
         }
     }
 
@@ -50,7 +56,7 @@ class AuthController extends Controller
                 return MakeResponse::errorResponse("Password mismatch", 422);
             }
         
-        }catch(\Exception $exception){
+        }catch(Exception $exception){
             Log::error("login error : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
             return MakeResponse::errorResponse();
         }
@@ -63,7 +69,7 @@ class AuthController extends Controller
             $token->revoke(); //destroy user token for logout
             return MakeResponse::successResponse("You have been successfully logged out!", 200);
 
-        }catch(\Exception $exception){
+        }catch(Exception $exception){
             Log::error("logout error : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
             return MakeResponse::errorResponse();
         }
@@ -80,7 +86,7 @@ class AuthController extends Controller
             }
             return MakeResponse::successResponse("Users matching the email were found", 200, $users);
 
-        }catch(\Exception $exception){
+        }catch(Exception $exception){
             Log::error("user search by email : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
             return MakeResponse::errorResponse();
         }

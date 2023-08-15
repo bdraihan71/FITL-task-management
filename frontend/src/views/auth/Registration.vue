@@ -4,6 +4,9 @@
             <div class="col-lg-6">
                 <div class="login-container">
                     <h2 class="text-center mb-4">Registration</h2>
+                    <div class="alert alert-danger" v-if="errors.internal_error">
+                        <strong>Error!</strong> {{errors.internal_error[0]}}
+                    </div>
                     <form @submit.prevent="signup">
                         <div class="form-group">
                             <label class="required-label" for="name">Name</label>
