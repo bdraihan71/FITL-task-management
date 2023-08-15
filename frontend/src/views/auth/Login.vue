@@ -5,6 +5,9 @@
                 <div class="login-container">
                     <h2 class="text-center mb-4">Login</h2>
                     <form @submit.prevent="login">
+                        <div class="alert alert-danger" v-if="errors.internal_error">
+                            <strong>Error!</strong> {{errors.internal_error[0]}}
+                        </div>
                         <div class="form-group">
                             <label class="required-label" for="email">Email</label>
                             <input type="text" class="form-control" id="email" v-model="email" placeholder="Enter your email" required>

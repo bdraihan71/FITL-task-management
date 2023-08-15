@@ -28,12 +28,7 @@ class AuthController extends Controller
         
         }catch(Exception $exception){
             Log::error("registration error : " . json_encode($exception->getMessage()) . " trace : " . json_encode($exception->getTrace()));
-            $errors = [
-                'internal_error' => [
-                    'There was some internal error'
-                ]
-            ];
-            return MakeResponse::errorResponse(errors : $errors);
+            return MakeResponse::errorResponse();
         }
     }
 

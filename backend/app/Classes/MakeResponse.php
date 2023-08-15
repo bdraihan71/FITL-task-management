@@ -13,12 +13,26 @@ class MakeResponse
         ], $responseCode);
     }
 
+    // public static function errorResponse($message = "There was some internal error", $responseCode = 500, $errors = [], $status = "failure")
+    // {
+    //     return response()->json([
+    //         'status' => $status,
+    //         'message' => $message,
+    //         'errors' => $errors,
+    //     ], $responseCode);
+    // }
+
     public static function errorResponse($message = "There was some internal error", $responseCode = 500, $errors = [], $status = "failure")
     {
         return response()->json([
             'status' => $status,
             'message' => $message,
-            'errors' => $errors,
+            'errors' => [
+                'internal_error' => [
+                    $message
+                ],
+                $errors
+            ]
         ], $responseCode);
     }
 }
