@@ -41,7 +41,7 @@ class TaskRepository implements TaskRepositoryInterface
                 'description' => $request['description'],
                 'deadline' => $request['deadline'],
                 'created_by' => auth()->user()->id,
-                'created_for' => $user->id
+                'created_for' => $user ? $user->id : null
             ]);
 
             if($task->created_for){
@@ -78,7 +78,7 @@ class TaskRepository implements TaskRepositoryInterface
             $task->description = $newDetails['description'];
             $task->status = $newDetails['status'];
             $task->deadline = $newDetails['deadline'];
-            $task->created_for = $user->id;
+            $task->created_for = $user ? $user->id : null;
             $task->save();
 
             if($task->created_for && $task->created_for != $oldTask['created_for']) //only mail natification for new assign user
